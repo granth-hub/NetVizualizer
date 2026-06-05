@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NetViz Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body { font-family: monospace; background-color: #1e1e1e; color: #fff; padding: 20px; }
+        #packets { height: 80vh; overflow-y: auto; background: #000; padding: 15px; border: 1px solid #444; border-radius: 5px; }
+        .packet { margin-bottom: 8px; color: #00ff00; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        .source { color: #ff5555; }
+        .dest { color: #5555ff; }
+    </style>
+</head>
+<body>
+    <h2>🚀 NetViz Live Network Dashboard</h2>
+    <div id="packets">Waiting for packets...</div>
+
+    <script>
+        var socket = io();
+        var packetDiv = document.getElementById('packets');
+        
+        socket.on('new_packet', function(data) {
+            // Remove the "Waiting" text on first packet
+            if (packetDiv.innerHTML === "Waiting for packets...") { packetDiv.innerHTML = ""; }
+            
+            var p = document.createElement('div');
+            p.className = 'packet';
+            p.innerHTML = '<span class="source">' + data.src + '</span> &rarr; <span class="dest">' + data.dst + '</span> | Size: ' + data.len + ' bytes';
+            
+            // Add new packet to the top
+            packetDiv.prepend(p);
+        });
+    </script>
+</body>
+</html>
+
